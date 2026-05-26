@@ -1,0 +1,48 @@
+/* Previene parpadeos de las llaves de Vue durante la carga del DOM */
+[v-cloak] {
+    display: none !important;
+}
+
+/* Modificaciones sobre los inputs */
+.custom-input {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.custom-input:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Comportamiento visual de las pestañas activas en la Navbar */
+.custom-nav-tabs .nav-link {
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 4px;
+}
+
+.custom-nav-tabs .nav-link.active {
+    border-bottom: 2px solid #0d6efd !important;
+}
+
+/* Microanimación para resultados */
+.animated-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exámen Programación Front End - IPLACEX</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-light">
+
+    <div id="app" v-cloak>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-dark" href="#">Programación Front End</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 custom-nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link"
+                                :class="{ 'active fw-bold text-primary': activeTab === 'calificaciones' }"
+                                @click.prevent="switchTab('calificaciones')" href="#">Cálculo de
+                                calificaciones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" :class="{ 'active fw-bold text-primary': activeTab === 'registro' }"
+                                @click.prevent="switchTab('registro')" href="#">Formulario de Registro</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-muted disabled" href="#">En construcción</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2">
+                        <input class="form-control form-control-sm" type="search" placeholder="Search">
+                        <button class="btn btn-outline-success btn-sm px-3" type="button">Busqueda</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card border-0 shadow-sm p-4 bg-white">
+
+                        <div v-if="activeTab === 'calificaciones'">
+                            <form @submit.prevent="handleCalificaciones">
+
+                                <div class="mb-3 text-center">
+                                    <label for="nota1" class="form-label fw-medium">Nota 1</label>
+                                    <input type="number" id="nota1" class="form-control text-center custom-input"
+                                        min="10" max="70" required v-model.number="formCalificaciones.nota1"
+                                        @input="$event.target.reportValidity()">
+                                </div>
+
+                                <div class="mb-3 text-center">
+                                    <label for="nota2" class="form-label fw-medium">Nota 2</label>
+                                    <input type="number" id="nota2" class="form-control text-center custom-input"
+                                        min="10" max="70" required v-model.number="formCalificaciones.nota2"
+                                        @input="$event.target.reportValidity()">
+                                </div>
+
+                                <div class="mb-3 text-center">
+                                    <label for="nota3" class="form-label fw-medium">Nota 3</label>
+                                    <input type="number" id="nota3" class="form-control text-center custom-input"
+                                        min="10" max="70" required v-model.number="formCalificaciones.nota3"
+                                        @input="$event.target.reportValidity()">
+                                </div>
+
+                                <div class="mb-4 text-center">
+                                    <label for="asistencia" class="form-label fw-medium">Asistencia %</label>
+                                    <input type="number" id="asistencia" class="form-control text-center custom-input"
+                                        min="0" max="100" required v-model.number="formCalificaciones.asistencia"
+                                        @input="$event.target.reportValidity()">
+                                </div>
+
+                                <div class="d-grid gap-2 col-6 mx-auto mb-3">
+                                    <button class="btn btn-primary fw-medium" type="submit">Calcular</button>
+                                </div>
+
+                                <div v-if="formCalificaciones.globalError"
+                                    class="text-danger text-center small fw-semibold mt-2">
+                                    {{ formCalificaciones.globalError }}
+                                </div>
+
+                                <div v-if="formCalificaciones.showResult"
+                                    class="text-center mt-4 pt-3 border-top animated-fade-in">
+                                    <p class="fs-5 mb-1 text-secondary">El promedio es: <span
+                                            class="fw-bold text-dark">{{ formCalificaciones.promedio }}</span></p>
+                                    <p class="fs-5 mb-0 text-secondary">Tu estado es:
+                                        <span class="fw-bold"
+                                            :class="formCalificaciones.estado === 'Aprobado' ? 'text-success' : 'text-danger'">
+                                            {{ formCalificaciones.estado }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div v-if="activeTab === 'registro'">
+                            <form @submit.prevent="handleRegistro" novalidate>
+
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label d-block text-center fw-medium">Nombre:</label>
+                                    <input type="text" id="nombre" class="form-control custom-input"
+                                        v-model.trim="formRegistro.nombre" @input="validarCampo('nombre')">
+                                    <div v-if="formRegistro.errors.nombre"
+                                        class="text-danger text-center small mt-1 fw-medium">{{
+                                        formRegistro.errors.nombre }}</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="correo" class="form-label d-block text-center fw-medium">Correo:</label>
+                                    <input type="email" id="correo" class="form-control custom-input"
+                                        v-model.trim="formRegistro.correo" @input="validarCampo('correo')">
+                                    <div v-if="formRegistro.errors.correo"
+                                        class="text-danger text-center small mt-1 fw-medium">{{
+                                        formRegistro.errors.correo }}</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password"
+                                        class="form-label d-block text-center fw-medium">Contraseña:</label>
+                                    <input type="password" id="password" class="form-control custom-input"
+                                        v-model="formRegistro.password" @input="validarCampo('password')">
+                                    <div v-if="formRegistro.errors.password"
+                                        class="text-danger text-center small mt-1 fw-medium">{{
+                                        formRegistro.errors.password }}</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="passwordConfirm"
+                                        class="form-label d-block text-center fw-medium">Repetir Contraseña:</label>
+                                    <input type="password" id="passwordConfirm" class="form-control custom-input"
+                                        v-model="formRegistro.passwordConfirm" @input="validarCampo('passwordConfirm')">
+                                    <div v-if="formRegistro.errors.passwordConfirm"
+                                        class="text-danger text-center small mt-1 fw-medium">{{
+                                        formRegistro.errors.passwordConfirm }}</div>
+                                </div>
+
+                                <div class="text-start">
+                                    <button class="btn btn-success px-4" type="submit">Enviar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script src="js/utils.js"></script>
+    <script src="js/validators.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
