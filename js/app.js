@@ -100,7 +100,10 @@ createApp({
                 return;
             }
 
-            // Si es válido, limpia los errores y los campos del formulario de forma síncrona
+            // Muestra la alerta de éxito de forma síncrona (bloqueante)
+            alert('¡El registro se ha procesado con éxito!');
+
+            // Una vez aceptada la alerta, limpia los campos del formulario
             this.formRegistro.nombre = '';
             this.formRegistro.correo = '';
             this.formRegistro.password = '';
@@ -111,11 +114,6 @@ createApp({
                 password: '',
                 passwordConfirm: ''
             };
-
-            // Retrasa la alerta un instante para garantizar que el navegador pinte los campos vacíos
-            setTimeout(() => {
-                alert('¡El registro se ha procesado con éxito!');
-            }, 100);
         },
 
         /**
